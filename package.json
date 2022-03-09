@@ -9,7 +9,9 @@
   "scripts": {
     "start": "node start.js",
     "lint": "standard",
-    "test": "npm run lint && gulp generate-assets && jest"
+    "test": "npm run lint && gulp generate-assets && npm run test:unit && npm run test:acceptance",
+    "test:acceptance": "cucumber-js __tests__/acceptance/features --require __tests__/acceptance/steps/*.js",
+    "test:unit": "jest"
   },
   "dependencies": {
     "acorn": "^8.5.0",
@@ -46,6 +48,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^7.3.2",
     "glob": "^7.1.4",
     "jest": "^27.3.1",
     "standard": "^14.3.3",
