@@ -25,7 +25,7 @@ Given('I have downloaded the prototype kit', async function () {
   })
   await clickAndWait(page, '[data-hinstall="Install"]')
   // TODO: Confirm that we have waited long enough
-  await clickAndWait(page, '[data-link="Download"]')
+  await clickAndWait(page, '[data-link="download"]')
 })
 
 Given('I am on the correct version of nodejs', function () {
