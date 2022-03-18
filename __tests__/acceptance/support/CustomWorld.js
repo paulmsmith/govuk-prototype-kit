@@ -1,33 +1,55 @@
 const { World, Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber')
+const puppeteer = require('puppeteer')
 
 class CustomWorld extends World {
-  status = 'base'
+  
+  browser = undefined
+  browserPath = undefined
 
   constructor (options) {
     super(options)
-    this.status = 'constructor'
+  }
+}
+
+const setupBrowser = async (context) => {
+  if (!context.browser) {
+    console.log('Setting up browser')
+    var browserOptions = {
+      headless: true,
+      product: 'chrome',
+      defaultViewport: null,
+      devtools: true,
+      slowMo: undefined, // slow down by specified ms so we can view in headful mode
+      args: [
+        `--window-size=1024,768`
+      ]
+    }
+
+    if (context.browserPath !== '') {
+      delete browserOptions.product;
+      browserOptions.executablePath = this.browserPath;
+    } else if (browserName === 'edge') {
+      delete browserOptions.product;
+      browserOptions.executablePath = edgePath;
+    }
+
+    context.browser =  await puppeteer.launch(browserOptions);
   }
 }
 
 CustomWorld.setup = function () {
   BeforeAll(async function () {
-    console.log('init')
-    this.status = 'init'
+    await setupBrowser(this)
     return Promise.resolve()
   })
-  Before(async function () {
-    console.log('reset before feature')
-    this.status = 'reset before feature'
+  Before(async function (scenario) {
+    await setupBrowser(this)
     return Promise.resolve()
   })
-  After(async function () {
-    console.log('reset after feature')
-    this.status = 'reset after feature'
+  After(async function (scenario) {
     return Promise.resolve()
   })
   AfterAll(async function () {
-    console.log('teardown after all')
-    this.status = 'teardown after all'
     return Promise.resolve()
   })
 }
