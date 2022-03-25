@@ -10,7 +10,7 @@
     "start": "node start.js",
     "lint": "standard",
     "test": "npm run lint && gulp generate-assets && npm run test:unit && npm run test:acceptance",
-    "test:acceptance": "cucumber-js --publish-quiet --require __tests__/acceptance/step_definitions __tests__/acceptance/features",
+    "test:acceptance": "cucumber-js --require __tests__/acceptance/step_definitions __tests__/acceptance/features",
     "test:unit": "jest"
   },
   "dependencies": {
