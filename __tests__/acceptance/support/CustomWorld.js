@@ -37,6 +37,12 @@ const setupBrowser = async (context) => {
   }
 }
 
+const teardownBrowser = async function (context) {
+  if (context.browser) {
+    await context.browser.close()
+  }
+}
+
 CustomWorld.setup = function () {
   BeforeAll(async function () {
     return Promise.resolve()
@@ -46,6 +52,7 @@ CustomWorld.setup = function () {
     return Promise.resolve()
   })
   After(async function (scenario) {
+    await teardownBrowser(this)
     return Promise.resolve()
   })
   AfterAll(async function () {
