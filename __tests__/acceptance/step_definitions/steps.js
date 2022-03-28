@@ -1,3 +1,5 @@
+const fs = require('fs/promises')
+
 const { Given, When, Then, setWorldConstructor, Before } = require('@cucumber/cucumber')
 const CustomWorld = require('../support/CustomWorld')
 
@@ -14,18 +16,29 @@ function clickAndWait (page, selector) {
   ])
 }
 
-Given('I have downloaded the prototype kit', async function () {
-  // visit https://govuk-prototype-kit.herokuapp.com/docs
-  // click install
-  // click Download the Prototype Kit (zip file)
-  // console.log('Step I have downloaded the prototype kit', this.status)
-  const page = await this.browser.newPage()
-  await page.goto('https://govuk-prototype-kit.herokuapp.com/docs', {
+Given('I am on the install page', async function () {
+  this.page = await this.browser.newPage()
+  await this.page.goto('https://govuk-prototype-kit.herokuapp.com/docs/install', {
     waitUntil: 'networkidle0'
   })
-  await clickAndWait(page, '[data-hinstall="Install"]')
-  // TODO: Confirm that we have waited long enough
-  await clickAndWait(page, '[data-link="download"]')
+})
+
+When('I click the download link', async function () {
+  await this.page.click('[data-link="download"]')
+})
+
+When('the download is complete', async function () {
+  // A simple `waitUntil: networkidle?` doesn't work here
+  // For now just use a naive timeout
+  await this.page.waitForTimeout(2000)
+})
+
+Then('I should have the latest release archive in my downloads folder', async function () {
+  await fs.access(`${process.env['HOME']}/Downloads/govuk-prototype-kit-12.0.1.zip`)
+})
+
+Given('I have downloaded the prototype kit', async function () {
+  // Magically put the release archive in the downloads folder
 })
 
 Given('I am on the correct version of nodejs', function () {
