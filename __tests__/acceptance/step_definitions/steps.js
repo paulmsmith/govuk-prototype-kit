@@ -1,4 +1,5 @@
 const fs = require('fs/promises')
+const path = require('path')
 
 const { Given, When, Then, setWorldConstructor, Before } = require('@cucumber/cucumber')
 const CustomWorld = require('../support/CustomWorld')
@@ -24,6 +25,11 @@ Given('I am on the install page', async function () {
 })
 
 When('I click the download link', async function () {
+  // configure the downloads folder
+  this.downloadsDir = path.join(this.testDir, 'Downloads')
+  await fs.mkdir(this.downloadsDir, { recursive: true })
+  const client = await this.page.target().createCDPSession()
+  await client.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: this.downloadsDir })
   await this.page.click('[data-link="download"]')
 })
 
@@ -34,7 +40,7 @@ When('the download is complete', async function () {
 })
 
 Then('I should have the latest release archive in my downloads folder', async function () {
-  await fs.access(`${process.env['HOME']}/Downloads/govuk-prototype-kit-12.0.1.zip`)
+  await fs.access(`${this.downloadsDir}/govuk-prototype-kit-12.0.1.zip`)
 })
 
 Given('I have downloaded the prototype kit', async function () {
