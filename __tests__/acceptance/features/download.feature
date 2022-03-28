@@ -1,3 +1,4 @@
+@browser
 Feature: Downloading the GOV.UK Prototype Kit
 
   Scenario: Downloading the latest version

@@ -45,10 +45,10 @@ const teardownBrowser = async function (context) {
 }
 
 CustomWorld.setup = function () {
-  Before(async function (scenario) {
+  Before('@browser', async function (scenario) {
     await setupBrowser(this)
   })
-  After(async function (scenario) {
+  After('@browser', async function (scenario) {
     await teardownBrowser(this)
   })
 }
