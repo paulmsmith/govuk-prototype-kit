@@ -15,7 +15,6 @@ class CustomWorld extends World {
 
 const setupBrowser = async (context) => {
   if (!context.browser) {
-    console.log('Setting up browser')
     var browserOptions = {
       headless: false, // FIXME: downloads should work in headless mode?
       product: 'chrome',
@@ -46,19 +45,11 @@ const teardownBrowser = async function (context) {
 }
 
 CustomWorld.setup = function () {
-  BeforeAll(async function () {
-    return Promise.resolve()
-  })
   Before(async function (scenario) {
     await setupBrowser(this)
-    return Promise.resolve()
   })
   After(async function (scenario) {
     await teardownBrowser(this)
-    return Promise.resolve()
-  })
-  AfterAll(async function () {
-    return Promise.resolve()
   })
 }
 
