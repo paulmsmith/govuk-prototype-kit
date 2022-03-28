@@ -2,7 +2,7 @@ const { World, Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumbe
 const puppeteer = require('puppeteer')
 
 class CustomWorld extends World {
-  
+
   browser = undefined
   browserPath = undefined
 
@@ -39,7 +39,6 @@ const setupBrowser = async (context) => {
 
 CustomWorld.setup = function () {
   BeforeAll(async function () {
-    await setupBrowser(this)
     return Promise.resolve()
   })
   Before(async function (scenario) {
