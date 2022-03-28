@@ -1,7 +1,3 @@
-const fs = require('fs/promises')
-const os = require('os')
-const path = require('path')
-
 const { World, Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber')
 const puppeteer = require('puppeteer')
 
@@ -51,16 +47,9 @@ const teardownBrowser = async function (context) {
 
 CustomWorld.setup = function () {
   BeforeAll(async function () {
-    global.tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cucumber-'))
-    global.oldCwd = process.cwd()
-    process.chdir(global.tmpDir)
-    console.log(`Running tests in ${process.cwd()}`)
     return Promise.resolve()
   })
   Before(async function (scenario) {
-    const featureName = path.basename(scenario.pickle.uri, '.feature')
-    const scenarioName = scenario.pickle.name.replaceAll(' ', '_')
-    this.testDir = path.join(global.tmpDir, `${featureName}-${scenarioName}`)
     await setupBrowser(this)
     return Promise.resolve()
   })
@@ -69,7 +58,6 @@ CustomWorld.setup = function () {
     return Promise.resolve()
   })
   AfterAll(async function () {
-    process.chdir(global.oldCwd)
     return Promise.resolve()
   })
 }

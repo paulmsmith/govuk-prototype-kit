@@ -3,10 +3,12 @@ const path = require('path')
 
 const { Given, When, Then, setWorldConstructor, Before } = require('@cucumber/cucumber')
 const CustomWorld = require('../support/CustomWorld')
+const useTestDirectories = require('../support/testDirectories')
 
 setWorldConstructor(CustomWorld)
 
 CustomWorld.setup()
+useTestDirectories()
 
 function clickAndWait (page, selector) {
   return Promise.all([
