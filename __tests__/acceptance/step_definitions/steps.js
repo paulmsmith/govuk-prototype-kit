@@ -21,7 +21,7 @@ Given('I have downloaded the prototype kit', async function () {
   // console.log('Step I have downloaded the prototype kit', this.status)
   const page = await this.browser.newPage()
   await page.goto('https://govuk-prototype-kit.herokuapp.com/docs', {
-    waitUntil: 'networkidle0',
+    waitUntil: 'networkidle0'
   })
   await clickAndWait(page, '[data-hinstall="Install"]')
   // TODO: Confirm that we have waited long enough
