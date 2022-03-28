@@ -1,7 +1,7 @@
 const fs = require('fs/promises')
 const path = require('path')
 
-const { Given, When, Then, setWorldConstructor, Before } = require('@cucumber/cucumber')
+const { Given, When, Then, setWorldConstructor } = require('@cucumber/cucumber')
 const CustomWorld = require('../support/CustomWorld')
 const useTestDirectories = require('../support/testDirectories')
 

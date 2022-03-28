@@ -16,7 +16,7 @@ class CustomWorld extends World {
 const setupBrowser = async (context) => {
   if (!context.browser) {
     var browserOptions = {
-      headless: false, // FIXME: downloads should work in headless mode?
+      headless: true,
       product: 'chrome',
       defaultViewport: null,
       devtools: true,
