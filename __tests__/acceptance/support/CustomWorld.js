@@ -15,7 +15,7 @@ const setupBrowser = async (context) => {
   if (!context.browser) {
     console.log('Setting up browser')
     var browserOptions = {
-      headless: true,
+      headless: false, // FIXME: downloads should work in headless mode?
       product: 'chrome',
       defaultViewport: null,
       devtools: true,
