@@ -1,4 +1,4 @@
-const fs = require('fs/promises')
+const fs = require('fs')
 const path = require('path')
 
 const expect = require('expect')
@@ -22,7 +22,7 @@ Given('I am on the install page', async function () {
 When('I click the download link', async function () {
   // configure the downloads folder
   const downloadsDir = path.join(this.testDir, 'Downloads')
-  // await fs.mkdir(downloadsDir, { recursive: true })
+  // await fs.mkdirSync(downloadsDir, { recursive: true })
   const client = await this.page.target().createCDPSession()
   await client.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloadsDir, eventsEnabled: true })
 
@@ -49,7 +49,7 @@ When('the download is complete', async function () {
 })
 
 Then('I should have the latest release archive in my downloads folder', async function () {
-  await fs.access(this.downloadedFilePath)
+  await fs.accessSync(this.downloadedFilePath)
   expect(path.basename(this.downloadedFilePath)).toMatch(/^govuk-prototype-kit-\d+\.\d+\.\d+\.zip$/)
 })
 
