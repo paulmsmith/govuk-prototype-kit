@@ -1,6 +1,8 @@
 const fs = require('fs/promises')
 const path = require('path')
 
+const expect = require('expect');
+
 const { Given, When, Then, setWorldConstructor } = require('@cucumber/cucumber')
 const CustomWorld = require('../support/CustomWorld')
 const useTestDirectories = require('../support/testDirectories')
@@ -9,15 +11,6 @@ setWorldConstructor(CustomWorld)
 
 CustomWorld.setup()
 useTestDirectories()
-
-// function clickAndWait (page, selector) {
-//   return Promise.all([
-//     page.click(selector),
-//     page.waitForNavigation({
-//       waitUntil: 'networkidle0'
-//     })
-//   ])
-// }
 
 Given('I am on the install page', async function () {
   this.page = await this.browser.newPage()
@@ -28,21 +21,36 @@ Given('I am on the install page', async function () {
 
 When('I click the download link', async function () {
   // configure the downloads folder
-  this.downloadsDir = path.join(this.testDir, 'Downloads')
-  await fs.mkdir(this.downloadsDir, { recursive: true })
+  const downloadsDir = path.join(this.testDir, 'Downloads')
+  // await fs.mkdir(downloadsDir, { recursive: true })
   const client = await this.page.target().createCDPSession()
-  await client.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: this.downloadsDir })
+  await client.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloadsDir, eventsEnabled: true })
+
+  this.downloadManager = new Promise((resolve, reject) => {
+    let fileName
+    client.addListener('Browser.downloadWillBegin', downloadMeta => {
+      fileName = downloadMeta.suggestedFilename
+    })
+    client.addListener('Browser.downloadProgress', downloadMeta => {
+      if (downloadMeta.state === 'completed') {
+        resolve({
+          filePath: path.join(downloadsDir, fileName)
+        })
+      } else if (downloadMeta.state === 'canceled') {
+        reject(new Error('The download state was set to "cancelled".'))
+      }
+    })
+  })
   await this.page.click('[data-link="download"]')
 })
 
 When('the download is complete', async function () {
-  // A simple `waitUntil: networkidle?` doesn't work here
-  // For now just use a naive timeout
-  await this.page.waitForTimeout(2000)
+  this.downloadedFilePath = (await this.downloadManager).filePath
 })
 
 Then('I should have the latest release archive in my downloads folder', async function () {
-  await fs.access(`${this.downloadsDir}/govuk-prototype-kit-12.0.1.zip`)
+  await fs.access(this.downloadedFilePath)
+  expect(path.basename(this.downloadedFilePath)).toMatch(/^govuk-prototype-kit-\d+\.\d+\.\d+\.zip$/)
 })
 
 Given('I have downloaded the prototype kit', async function () {
