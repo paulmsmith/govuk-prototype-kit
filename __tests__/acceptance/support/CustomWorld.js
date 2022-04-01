@@ -1,15 +1,14 @@
-const { World, Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber')
+const { World, Before, After } = require('@cucumber/cucumber')
 const puppeteer = require('puppeteer')
 
 class CustomWorld extends World {
-
-  browser = undefined
-  browserPath = undefined
-
-  testDir = undefined
-
   constructor (options) {
     super(options)
+
+    this.browser = undefined
+    this.browserPath = undefined
+
+    this.testDir = undefined
   }
 }
 
@@ -22,19 +21,16 @@ const setupBrowser = async (context) => {
       devtools: true,
       slowMo: undefined, // slow down by specified ms so we can view in headful mode
       args: [
-        `--window-size=1024,768`
+        '--window-size=1024,768'
       ]
     }
 
     if (context.browserPath !== '') {
-      delete browserOptions.product;
-      browserOptions.executablePath = this.browserPath;
-    } else if (browserName === 'edge') {
-      delete browserOptions.product;
-      browserOptions.executablePath = edgePath;
+      delete browserOptions.product
+      browserOptions.executablePath = this.browserPath
     }
 
-    context.browser =  await puppeteer.launch(browserOptions);
+    context.browser = await puppeteer.launch(browserOptions)
   }
 }
 

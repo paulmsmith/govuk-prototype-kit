@@ -10,14 +10,14 @@ setWorldConstructor(CustomWorld)
 CustomWorld.setup()
 useTestDirectories()
 
-function clickAndWait (page, selector) {
-  return Promise.all([
-    page.click(selector),
-    page.waitForNavigation({
-      waitUntil: 'networkidle0'
-    })
-  ])
-}
+// function clickAndWait (page, selector) {
+//   return Promise.all([
+//     page.click(selector),
+//     page.waitForNavigation({
+//       waitUntil: 'networkidle0'
+//     })
+//   ])
+// }
 
 Given('I am on the install page', async function () {
   this.page = await this.browser.newPage()
